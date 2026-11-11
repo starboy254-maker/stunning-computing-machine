@@ -1,0 +1,797 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feastly · food delivery like Glovo</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: #f9fafc;
+      color: #1f2937;
+    }
+
+    /* ----- Glovo-style vibrant accent ----- */
+    :root {
+      --primary: #ff6b35;
+      --primary-dark: #e85a2a;
+      --secondary: #ffb800;
+      --gray-light: #f3f4f6;
+      --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+    }
+
+    /* ----- header / navbar ----- */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      background: white;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--primary);
+    }
+
+    .logo i {
+      background: var(--primary);
+      color: white;
+      padding: 8px;
+      border-radius: 14px;
+      font-size: 20px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--gray-light);
+      padding: 10px 18px;
+      border-radius: 40px;
+      gap: 12px;
+      flex: 0 1 400px;
+    }
+
+    .search-bar i {
+      color: #9ca3af;
+      font-size: 18px;
+    }
+
+    .search-bar input {
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      width: 100%;
+      outline: none;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-weight: 600;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #374151;
+      font-size: 15px;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .cart-icon {
+      background: var(--primary);
+      color: white !important;
+      padding: 10px 18px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .cart-icon i {
+      color: white;
+    }
+
+    /* ----- hero / banner ----- */
+    .hero {
+      padding: 48px 32px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1280px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      color: #111827;
+    }
+
+    .hero h1 span {
+      color: var(--primary);
+      background: #fff0e9;
+      padding: 0 12px;
+      border-radius: 24px;
+      display: inline-block;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #4b5563;
+      margin-top: 12px;
+      max-width: 500px;
+    }
+
+    .hero-badge {
+      background: white;
+      padding: 16px 24px;
+      border-radius: 60px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      border: 1px solid #f0f0f0;
+    }
+
+    .hero-badge i {
+      color: var(--secondary);
+      font-size: 24px;
+    }
+
+    /* ----- filter categories (Glovo-style pills) ----- */
+    .categories {
+      display: flex;
+      gap: 12px;
+      padding: 16px 32px 8px;
+      max-width: 1280px;
+      margin: 0 auto;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: thin;
+    }
+
+    .category-pill {
+      background: white;
+      padding: 12px 24px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      border: 1px solid #e5e7eb;
+      transition: all 0.15s;
+      cursor: default;
+    }
+
+    .category-pill i {
+      color: var(--primary);
+      font-size: 16px;
+    }
+
+    .category-pill.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .category-pill.active i {
+      color: white;
+    }
+
+    /* ----- main content / restaurant grid ----- */
+    .main-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 32px 64px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 24px 0 20px;
+    }
+
+    .section-title h2 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .section-title a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .restaurant-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 26px;
+    }
+
+    /* ----- restaurant card (Glovo style) ----- */
+    .restaurant-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid #f1f3f5;
+      display: flex;
+      flex-direction: column;
+      cursor: default;
+    }
+
+    .restaurant-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-image {
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 12px;
+    }
+
+    .delivery-badge {
+      background: white;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1f2937;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .delivery-badge i {
+      color: var(--primary);
+      font-size: 12px;
+    }
+
+    .card-content {
+      padding: 18px 18px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .restaurant-name {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+
+    .restaurant-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    .rating {
+      background: #fef9e7;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .rating i {
+      color: var(--secondary);
+      font-size: 13px;
+    }
+
+    .price-range {
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      background: var(--gray-light);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 30px;
+      color: #4b5563;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      border-top: 1px solid #f3f4f6;
+      padding-top: 14px;
+    }
+
+    .delivery-time {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .delivery-time i {
+      color: var(--primary);
+    }
+
+    .order-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: default;
+      transition: background 0.15s;
+    }
+
+    .order-btn i {
+      font-size: 12px;
+    }
+
+    .order-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* ----- footer ----- */
+    .footer {
+      background: white;
+      border-top: 1px solid #eef0f3;
+      padding: 40px 32px 24px;
+      margin-top: 20px;
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .footer-col p {
+      color: #6b7280;
+      font-size: 14px;
+      margin-top: 8px;
+      max-width: 250px;
+    }
+
+    .footer-col h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #111827;
+    }
+
+    .footer-col a {
+      display: block;
+      color: #4b5563;
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .footer-col a:hover {
+      color: var(--primary);
+    }
+
+    .copyright {
+      max-width: 1280px;
+      margin: 32px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid #eef0f3;
+      font-size: 13px;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* simple responsive */
+    @media (max-width: 800px) {
+      .navbar {
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px 20px;
+      }
+      .search-bar {
+        order: 3;
+        flex: 1 1 100%;
+      }
+      .hero {
+        padding: 32px 20px 16px;
+      }
+      .hero h1 {
+        font-size: 32px;
+      }
+      .categories {
+        padding: 16px 20px 8px;
+      }
+      .main-content {
+        padding: 16px 20px 48px;
+      }
+      .section-title h2 {
+        font-size: 22px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .nav-links a:not(.cart-icon) {
+        display: none;
+      }
+      .nav-links {
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-bolt"></i>
+      <span>feastly</span>
+    </div>
+
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search for restaurants, dishes...">
+    </div>
+
+    <div class="nav-links">
+      <a href="#"><i class="fas fa-map-marker-alt"></i> New York</a>
+      <a href="#"><i class="fas fa-user"></i> Sign in</a>
+      <a href="#" class="cart-icon"><i class="fas fa-shopping-bag"></i> Cart · 0</a>
+    </div>
+  </nav>
+
+  <!-- Hero / banner -->
+  <section class="hero">
+    <div>
+      <h1>Delicious food,<br> <span>delivered fast</span></h1>
+      <p>Order from your favorite local restaurants and get it in minutes. Fresh, hot and ready to enjoy.</p>
+    </div>
+    <div class="hero-badge">
+      <i class="fas fa-truck-fast"></i>
+      <div>
+        <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Free delivery</div>
+        <div style="font-size: 18px; font-weight: 800; color: #111827;">on your first order</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category pills (like Glovo) -->
+  <div class="categories">
+    <div class="category-pill active"><i class="fas fa-pizza-slice"></i> All</div>
+    <div class="category-pill"><i class="fas fa-burger"></i> Burgers</div>
+    <div class="category-pill"><i class="fas fa-utensils"></i> Sushi</div>
+    <div class="category-pill"><i class="fas fa-mug-hot"></i> Breakfast</div>
+    <div class="category-pill"><i class="fas fa-leaf"></i> Healthy</div>
+    <div class="category-pill"><i class="fas fa-ice-cream"></i> Desserts</div>
+    <div class="category-pill"><i class="fas fa-coffee"></i> Coffee</div>
+  </div>
+
+  <!-- Main content: restaurant grid -->
+  <main class="main-content">
+    <div class="section-title">
+      <h2>Popular near you</h2>
+      <a href="#">See all <i class="fas fa-arrow-right" style="font-size: 12px; margin-left: 4px;"></i></a>
+    </div>
+
+    <div class="restaurant-grid">
+      <!-- Card 1: Burger joint -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 15–25 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Smash & Stack</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.8</span>
+            <span class="price-range">$$</span>
+            <span>Burger · American</span>
+          </div>
+          <div class="tags">
+            <span class="tag">Free delivery</span>
+            <span class="tag">Popular</span>
+          </div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 20–30 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Sushi -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 20–35 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Sakura Sushi</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.9</span>
+            <span class="price-range">$$$</span>
+            <span>Japanese · Sushi</span>
+          </div>
+          <div class="tags">
+            <span class="tag">Premium</span>
+            <span class="tag">New</span>
+          </div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 25–35 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Pizza -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 10–20 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Napoli Pizza Co.</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.7</span>
+            <span class="price-range">$$</span>
+            <span>Italian · Pizza</span>
+          </div>
+          <div class="tags">
+            <span class="tag">Family</span>
+            <span class="tag">Offer</span>
+          </div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 15–25 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Healthy bowl -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 15–25 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Green & Grain</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.6</span>
+            <span class="price-range">$$</span>
+            <span>Healthy · Salads</span>
+          </div>
+          <div class="tags">
+            <span class="tag">Vegan</span>
+            <span class="tag">Gluten-free</span>
+          </div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 20–30 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5: Breakfast / coffee -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 10–20 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Morning Brew</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.8</span>
+            <span class="price-range">$</span>
+            <span>Café · Breakfast</span>
+          </div>
+          <div class="tags">
+            <span class="tag">Coffee</span>
+            <span class="tag">Pastries</span>
+          </div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 10–20 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6: Dessert -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 15–25 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Sweet Symphony</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.9</span>
+            <span class="price-range">$$</span>
+            <span>Desserts · Bakery</span>
+          </div>
+          <div class="tags">
+            <span class="tag">Ice cream</span>
+            <span class="tag">Cakes</span>
+          </div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 15–25 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- second row / more restaurants (extra) -->
+    <div class="section-title" style="margin-top: 42px;">
+      <h2>More to explore</h2>
+      <a href="#">See all <i class="fas fa-arrow-right" style="font-size: 12px; margin-left: 4px;"></i></a>
+    </div>
+
+    <div class="restaurant-grid">
+      <!-- extra 1: Thai -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 20–30 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Bangkok Street</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.7</span>
+            <span class="price-range">$$</span>
+            <span>Thai · Asian</span>
+          </div>
+          <div class="tags"><span class="tag">Spicy</span><span class="tag">Takeaway</span></div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 20–35 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- extra 2: Mexican -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 15–25 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Taco Loco</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.5</span>
+            <span class="price-range">$</span>
+            <span>Mexican · Tacos</span>
+          </div>
+          <div class="tags"><span class="tag">Street food</span><span class="tag">Quick</span></div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 15–25 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- extra 3: Ramen -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80');">
+          <div class="delivery-badge"><i class="fas fa-bolt"></i> 20–30 min</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">Ramen Ichi</div>
+          <div class="restaurant-meta">
+            <span class="rating"><i class="fas fa-star"></i> 4.8</span>
+            <span class="price-range">$$</span>
+            <span>Japanese · Ramen</span>
+          </div>
+          <div class="tags"><span class="tag">Comfort</span><span class="tag">Broth</span></div>
+          <div class="card-footer">
+            <span class="delivery-time"><i class="fas fa-clock"></i> 20–30 min</span>
+            <div class="order-btn"><i class="fas fa-plus"></i> Order</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="logo" style="font-size: 24px; margin-bottom: 12px;">
+          <i class="fas fa-bolt"></i><span>feastly</span>
+        </div>
+        <p>Your favorite meals, delivered with a smile. Fast, fresh and always on time.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Discover</h4>
+        <a href="#">Restaurants</a>
+        <a href="#">Offers</a>
+        <a href="#">Gift cards</a>
+        <a href="#">Become a courier</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About us</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <a href="#">Contact</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">FAQ</a>
+      </div>
+    </div>
+    <div class="copyright">
+      <span>© 2025 Feastly – inspired by Glovo, crafted with <i class="fas fa-heart" style="color: var(--primary);"></i></span>
+      <span><i class="fas fa-phone-alt"></i> +1 (555) 789-FOOD</span>
+    </div>
+  </footer>
+</body>
+</html>
